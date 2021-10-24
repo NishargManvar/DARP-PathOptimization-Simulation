@@ -23,7 +23,7 @@ class DARPinPoly(DARP):
         FinalPaths = []
 
         for mode in range(4):
-            print("###### MODE "+str(mode)+" ########\n")
+            #print("###### MODE "+str(mode)+" ########\n")
             MSTs = self.calculateMSTs(self.BinaryRobotRegions, self.droneNo, self.rows, self.cols, mode)
             AllRealPaths = []
             for r in range(self.droneNo):
@@ -32,9 +32,11 @@ class DARPinPoly(DARP):
                 ct.RemoveTheAppropriateEdges()
                 ct.CalculatePathsSequence(4 * self.init_robot_pos[r][0] * self.cols + 2 * self.init_robot_pos[r][1])
                 AllRealPaths.append(ct.PathSequence)
-            print(AllRealPaths)
+
+            # To print all the paths plannes
+            #print(AllRealPaths)
             FinalPaths.append(AllRealPaths)
-            print("\n\n\n")
+            #print("\n\n\n")
 
             TypesOfLines = np.zeros((self.rows*2, self.cols*2, 2))
             for r in range(self.droneNo):
@@ -93,18 +95,41 @@ class DARPinPoly(DARP):
                 image = visualize_paths(AllRealPaths, subCellsAssignment, self.droneNo, self.color)
                 image.visualize_paths(mode)
 
-        print("\nResults:\n")
+        #print("\nResults:\n")
 
         for mode, val in mode_to_drone_turns.items():
-            print(mode)
+            #printing initial positions of the bots in long form as CSV
+            for in_pos_input in pos_in_long:
+                print(in_pos_input,end=",")
+            #printing themode for which the values are being printed
+            print(mode,end="")
             straightlinemoves = []
             for i in range(self.droneNo):
                 straightlinemoves.append(len(FinalPaths[mode][i])-mode_to_drone_turns[mode].turns[i])
                 #print("Straight line moves for robot " + str(i) + " = " + str(len(FinalPaths[mode][i])-mode_to_drone_turns[mode].turns[i]))
-            print("Straight line moves: ",end="")
-            print(straightlinemoves,end="")
-            print(val)
-            print("\n\n")
+            #print("Straight line moves: ",end="")
+
+            #prints straight line moves as CSV
+            for num_straights in straightlinemoves:
+                print(",",num_straights,sep='',end="")
+
+            #print straight line moves as a list
+            #print(straightlinemoves, end="   ")
+
+            #print(val)   #val is an Object that stores data about the turns. : val.turns , val.avg (average turns), val.std (std dev of turns)
+
+            #printing only number of turns
+            #print("Turns: ",end="")
+
+            #prints values of number of turns as CSV
+            for num_turns in val.turns:
+                print(",",num_turns,sep='',end="")
+
+            #prints value of turns as a list
+            #print(val.turns, end="   ")
+
+            print("")
+
 
     def CalcRealBinaryReg(self, BinaryRobotRegion, rows, cols):
         temp = np.zeros((2*rows, 2*cols))
@@ -172,12 +197,16 @@ if __name__ == '__main__':
     obstacles_positions = []
     initial_positions = []
 
+    # finding row and column of bot position from grid position
     for position in args.in_pos:
         if position < 0 or position >= rows*cols:
             print("Initial positions should be inside the Grid.")
             sys.exit(2)
         initial_positions.append((position // cols, position % cols))
+        #saving position input to print for path optimization simulation results
+        pos_in_long = args.in_pos
 
+    # finding row and column of obstalces position from grid position
     for obstacle in args.obs_pos:
         if obstacle < 0 or obstacle >= rows*cols:
             print("Obstacles should be inside the Grid.")
@@ -213,10 +242,11 @@ if __name__ == '__main__':
     dcells = 2
     importance = False
 
-    print("\nInitial Conditions Defined:")
-    print("Grid Dimensions:", rows, cols)
-    print("Robot Number:", len(initial_positions))
-    print("Initial Robots' positions", initial_positions)
-    print("Portions for each Robot:", portions, "\n")
+    # Printing initial conditions
+    #print("\nInitial Conditions Defined:")
+    #print("Grid Dimensions:", rows, cols)
+    #print("Robot Number:", len(initial_positions))
+    #print("Initial Robots' positions", initial_positions)
+    #print("Portions for each Robot:", portions, "\n")
 
     poly = DARPinPoly(rows, cols, MaxIter, CCvariation, randomLevel, dcells, importance, args.nep, initial_positions, portions, obstacles_positions, args.vis)

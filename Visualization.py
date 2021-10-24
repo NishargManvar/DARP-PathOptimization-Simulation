@@ -1,4 +1,6 @@
 import sys
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 from pygame.locals import KEYDOWN, K_q
 import numpy as np

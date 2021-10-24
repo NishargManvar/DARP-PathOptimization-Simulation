@@ -38,8 +38,9 @@ class DARP():
         for pos in initial_positions:
             self.GridEnv[pos[0], pos[1]] = 2
 
-        print("Given Grid area:")
-        print(self.GridEnv)
+        #prints the Grid Layout with bots and obstalces
+        #print("Given Grid area:")
+        #print(self.GridEnv)
 
         self.droneNo = 0
         self.A = np.zeros((self.rows, self.cols))
@@ -132,9 +133,10 @@ class DARP():
                     elif plainErrors[r] > upperThres:
                         divFairError[r] = upperThres - plainErrors[r]
 
+                #Prints the Grid Assignment for each bot
                 if self.IsThisAGoalState(self.termThr, ConnectedRobotRegions):
-                    print("\nFinal Assignment Matrix:")
-                    print(self.A)
+                    #print("\nFinal Assignment Matrix:")
+                    #print(self.A)
                     break
 
                 TotalNegPerc = 0
